@@ -947,4 +947,15 @@ function novacare_suburb_template_loader( $template ) {
 }
 add_filter( 'template_include', 'novacare_suburb_template_loader', 99 );
 
-
+/**
+ * Enqueue Inter Google Font Globally
+ */
+function novacare_enqueue_inter_font() {
+    wp_enqueue_style( 
+        'novacare-google-font-inter', 
+        'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap', 
+        array(), 
+        null 
+    );
+}
+add_action( 'wp_enqueue_scripts', 'novacare_enqueue_inter_font', 5 );
