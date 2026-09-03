@@ -1252,4 +1252,42 @@ if ( ! function_exists( 'novacare_cleanup_head_bloat' ) ) {
     add_action( 'init', 'novacare_cleanup_head_bloat' );
 }
 
+/**
+ * 7. Guaranteed H1 Heading & Title/Description Hierarchy Optimizer
+ */
+// A. Optimize Document Title Tag (Fix duplicate branding "Nova Care Australia - Nova Care Australia")
+if ( ! function_exists( 'novacare_seo_document_title' ) ) {
+    function novacare_seo_document_title( $title ) {
+        if ( is_front_page() || is_home() ) {
+            return 'Nova Care Australia | NDIS Disability Support & Aged Care Sans Souci & Sutherland Shire';
+        }
+        return $title;
+    }
+    add_filter( 'pre_get_document_title', 'novacare_seo_document_title', 99 );
+}
+
+// B. Guarantee at least one H1 heading on every page (Fix 0 H1 tags issue)
+if ( ! function_exists( 'novacare_guarantee_h1_heading' ) ) {
+    function novacare_guarantee_h1_heading( $content ) {
+        if ( is_admin() || ( function_exists( 'is_main_query' ) && ! is_main_query() ) ) {
+            return $content;
+        }
+
+        // Check if content already contains an <h1 tag
+        if ( false === stripos( $content, '<h1' ) ) {
+            $page_title = is_front_page() 
+                ? 'Nova Care Australia - NDIS Disability Support & In-Home Aged Care Services' 
+                : get_the_title();
+            
+            $h1_tag = '<h1 class="av-seo-h1-fallback screen-reader-text" style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0;">' . esc_html( $page_title ) . '</h1>';
+            
+            $content = $h1_tag . $content;
+        }
+
+        return $content;
+    }
+    add_filter( 'the_content', 'novacare_guarantee_h1_heading', 1 );
+}
+
+
 
