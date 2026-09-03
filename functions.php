@@ -875,3 +875,76 @@ if( ! function_exists( 'avia_disable_seo_analysis_delay_cb' ) )
  *  register custom functions that are not related to the framework but necessary for the theme to run
  */
 require_once( 'functions-enfold.php' );
+
+/**
+ * Novacare SEO Suburb Landing Pages Integration
+ */
+if ( file_exists( get_template_directory() . '/includes/suburb-data.php' ) ) {
+    require_once get_template_directory() . '/includes/suburb-data.php';
+}
+
+// Shortcode to display the 20 Suburbs Interlinking Matrix on any page/post
+function novacare_suburbs_grid_shortcode( $atts ) {
+    if ( ! function_exists( 'novacare_get_suburbs_data' ) ) {
+        return '';
+    }
+    $all_suburbs = novacare_get_suburbs_data();
+    
+    ob_start();
+    ?>
+    <div class="nc-suburbs-grid-wrapper" style="margin: 40px 0;">
+        <h3 style="font-size: 1.5rem; color: #3B0764; font-weight: 700; margin-bottom: 20px;">Surrounding Sutherland Shire Suburbs We Serve</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+            <?php foreach ( $all_suburbs as $key => $sub_item ) : 
+                $link = home_url( '/' . $sub_item['slug'] . '/' );
+                ?>
+                <a href="<?php echo esc_url( $link ); ?>" style="background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; padding: 12px 16px; text-decoration: none; display: block; transition: all 0.2s ease;">
+                    <strong style="display: block; color: #3B0764; font-size: 0.98rem;"><?php echo esc_html( $sub_item['name'] ); ?></strong>
+                    <span style="font-size: 0.8rem; color: #6B7280;">Postcode <?php echo esc_html( $sub_item['postcode'] ); ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode( 'novacare_suburbs_grid', 'novacare_suburbs_grid_shortcode' );
+
+/**
+ * Dynamic Suburb Page Template Auto-Loader
+ * Automatically routes all 20 suburb URLs to template-suburb.php without requiring manual WP database pages.
+ */
+function novacare_suburb_template_loader( $template ) {
+    if ( ! function_exists( 'novacare_get_suburbs_data' ) || is_admin() ) {
+        return $template;
+    }
+    
+    $request_uri = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+    $segments = explode( '/', $request_uri );
+    $current_slug = end( $segments );
+    
+    if ( empty( $current_slug ) ) {
+        return $template;
+    }
+
+    $all_suburbs = novacare_get_suburbs_data();
+    foreach ( $all_suburbs as $key => $suburb_info ) {
+        if ( $suburb_info['slug'] === $current_slug || $key === $current_slug ) {
+            $suburb_template = get_template_directory() . '/template-suburb.php';
+            if ( file_exists( $suburb_template ) ) {
+                global $wp_query;
+                if ( is_object( $wp_query ) ) {
+                    $wp_query->is_404 = false;
+                    $wp_query->is_page = true;
+                    $wp_query->is_singular = true;
+                    status_header( 200 );
+                }
+                return $suburb_template;
+            }
+        }
+    }
+    return $template;
+}
+add_filter( 'template_include', 'novacare_suburb_template_loader', 99 );
+
+
