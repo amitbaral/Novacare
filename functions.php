@@ -1199,10 +1199,10 @@ if ( ! function_exists( 'novacare_inject_seo_meta_tags' ) ) {
         }
 
         $site_name   = 'Nova Care Australia';
-        $title       = is_front_page() ? get_bloginfo( 'name' ) . ' | NDIS & Home Care Packages Sutherland Shire' : wp_get_document_title();
-        $description = is_singular() && ! empty( $post->post_excerpt ) 
+        $title       = is_front_page() ? 'Nova Care Australia | NDIS & Aged Care Sans Souci' : wp_get_document_title();
+        $description = is_singular() && is_object( $post ) && ! empty( $post->post_excerpt ) 
             ? esc_attr( wp_strip_all_tags( $post->post_excerpt ) ) 
-            : 'Nova Care Australia provides premier NDIS disability support services and Home Care Packages across Sydney and Sutherland Shire.';
+            : 'Nova Care Australia provides premier NDIS disability support, personal care, and Home Care Packages in Sans Souci, St George, and Sutherland Shire.';
         $url         = is_singular() ? get_permalink( $post ) : home_url( $_SERVER['REQUEST_URI'] ?? '/' );
         $image       = get_stylesheet_directory_uri() . '/images/logo.png';
 
@@ -1213,7 +1213,8 @@ if ( ! function_exists( 'novacare_inject_seo_meta_tags' ) ) {
             }
         }
 
-        echo "\n<!-- Nova Care OpenGraph & GEO Meta Tags -->\n";
+        echo "\n<!-- Nova Care OpenGraph, Meta Description & GEO Tags -->\n";
+        echo '<meta name="description" content="' . esc_attr( $description ) . '" />' . "\n";
         echo '<meta property="og:locale" content="en_AU" />' . "\n";
         echo '<meta property="og:type" content="' . ( is_singular() ? 'article' : 'website' ) . '" />' . "\n";
         echo '<meta property="og:title" content="' . esc_attr( $title ) . '" />' . "\n";
@@ -1255,16 +1256,17 @@ if ( ! function_exists( 'novacare_cleanup_head_bloat' ) ) {
 /**
  * 7. Guaranteed H1 Heading & Title/Description Hierarchy Optimizer
  */
-// A. Optimize Document Title Tag (Fix duplicate branding "Nova Care Australia - Nova Care Australia")
+// A. Optimize Document Title Tag (Optimal 50 chars for Google SERP)
 if ( ! function_exists( 'novacare_seo_document_title' ) ) {
     function novacare_seo_document_title( $title ) {
         if ( is_front_page() || is_home() ) {
-            return 'Nova Care Australia | NDIS Disability Support & Aged Care Sans Souci & Sutherland Shire';
+            return 'Nova Care Australia | NDIS & Aged Care Sans Souci';
         }
         return $title;
     }
     add_filter( 'pre_get_document_title', 'novacare_seo_document_title', 99 );
 }
+
 
 // B. Guarantee at least one H1 heading on every page (Fix 0 H1 tags issue)
 if ( ! function_exists( 'novacare_guarantee_h1_heading' ) ) {
