@@ -959,3 +959,297 @@ function novacare_enqueue_inter_font() {
     );
 }
 add_action( 'wp_enqueue_scripts', 'novacare_enqueue_inter_font', 5 );
+
+/**
+ * ============================================================================
+ * NOVA CARE AUSTRALIA - SEO & GENERATIVE ENGINE OPTIMIZATION (GEO) SUITE
+ * ============================================================================
+ */
+
+/**
+ * 1. Allow AI Crawlers & Link Sitemaps in robots.txt
+ */
+if ( ! function_exists( 'novacare_ai_robots_txt' ) ) {
+    function novacare_ai_robots_txt( $output, $public ) {
+        $ai_bots = "
+# Generative Engine Optimization (GEO) - AI Scraper Access
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Sitemap Declarations
+Sitemap: " . esc_url( home_url( '/sitemap_index.xml' ) ) . "
+Sitemap: " . esc_url( home_url( '/llms.txt' ) ) . "
+";
+        return $output . $ai_bots;
+    }
+    add_filter( 'robots_txt', 'novacare_ai_robots_txt', 99, 2 );
+}
+
+/**
+ * 2. Dynamic /llms.txt Endpoint Generator for AI Engines
+ */
+if ( ! function_exists( 'novacare_add_llms_rewrite_rule' ) ) {
+    function novacare_add_llms_rewrite_rule() {
+        add_rewrite_rule( '^llms\.txt$', 'index.php?novacare_llms=1', 'top' );
+    }
+    add_action( 'init', 'novacare_add_llms_rewrite_rule' );
+}
+
+if ( ! function_exists( 'novacare_add_llms_query_var' ) ) {
+    function novacare_add_llms_query_var( $vars ) {
+        $vars[] = 'novacare_llms';
+        return $vars;
+    }
+    add_filter( 'query_vars', 'novacare_add_llms_query_var' );
+}
+
+if ( ! function_exists( 'novacare_render_llms_txt' ) ) {
+    function novacare_render_llms_txt() {
+        if ( get_query_var( 'novacare_llms' ) ) {
+            header( 'Content-Type: text/plain; charset=utf-8' );
+            echo "# Nova Care Australia\n\n";
+            echo "> Premier NDIS Disability Support & Home Care Package Provider in Sydney & Sutherland Shire.\n\n";
+            echo "## Organization Summary\n";
+            echo "Nova Care Australia provides compassionate, individualised disability support services under the National Disability Insurance Scheme (NDIS) and Home Care Packages for seniors across Sydney and the Sutherland Shire region.\n\n";
+            echo "## Core Services\n";
+            echo "- NDIS Supported Independent Living (SIL)\n";
+            echo "- Individualised In-Home Care & Support\n";
+            echo "- Personal Care & Community Nursing\n";
+            echo "- Home Care Packages (Level 1, 2, 3 & 4)\n";
+            echo "- Respite Care & Emergency Support\n";
+            echo "- Social & Community Participation\n";
+            echo "- Transport & Mobility Assistance\n\n";
+            echo "## Primary Service Locations (Sutherland Shire & St George Area)\n";
+            if ( function_exists( 'novacare_get_suburbs_data' ) ) {
+                $suburbs = novacare_get_suburbs_data();
+                foreach ( $suburbs as $key => $sub ) {
+                    echo "- " . esc_html( $sub['name'] ) . " (Postcode " . esc_html( $sub['postcode'] ) . "): " . esc_url( home_url( '/' . $sub['slug'] . '/' ) ) . "\n";
+                }
+            } else {
+                echo "- Sutherland, Cronulla, Caringbah, Miranda, Engadine, Menai, Gymea, Jannali, Sylvania, Kirrawee\n";
+            }
+            echo "\n## Official Contact & Verification\n";
+            echo "- Phone: 0426 142 162\n";
+            echo "- Main Website: " . esc_url( home_url( '/' ) ) . "\n";
+            echo "- Contact Page: " . esc_url( home_url( '/contact/' ) ) . "\n";
+            echo "- NDIS Registered Provider Services: Yes\n";
+            exit;
+        }
+    }
+    add_action( 'template_redirect', 'novacare_render_llms_txt' );
+}
+
+/**
+ * Auto-flush rewrite rules once if llms.txt isn't registered yet
+ */
+if ( ! function_exists( 'novacare_flush_llms_rewrite' ) ) {
+    function novacare_flush_llms_rewrite() {
+        if ( ! get_option( 'novacare_llms_rewrite_flushed' ) ) {
+            novacare_add_llms_rewrite_rule();
+            flush_rewrite_rules();
+            update_option( 'novacare_llms_rewrite_flushed', 1 );
+        }
+    }
+    add_action( 'init', 'novacare_flush_llms_rewrite', 99 );
+}
+
+/**
+ * 3. Unified Schema.org JSON-LD @graph Entity Architecture
+ */
+if ( ! function_exists( 'novacare_inject_global_schema_graph' ) ) {
+    function novacare_inject_global_schema_graph() {
+        global $post;
+
+        $org_id = home_url( '/#organization' );
+        $site_id = home_url( '/#website' );
+
+        $graph = array(
+            array(
+                '@type'         => array( 'MedicalBusiness', 'LocalBusiness' ),
+                '@id'           => $org_id,
+                'name'          => 'Nova Care Australia',
+                'url'           => home_url( '/' ),
+                'telephone'     => '0426 142 162',
+                'priceRange'    => '$$',
+                'description'   => 'Premier NDIS disability support services and Home Care Package provider based in Sans Souci, serving St George, Bayside, and Sutherland Shire.',
+                'image'         => get_stylesheet_directory_uri() . '/images/logo.png',
+                'hasMap'        => 'https://www.google.com/maps/place/Nova+Care+Australia/@-33.9912899,151.1323251,17z/data=!3m1!4b1!4m6!3m5!1s0x6b12b16cf958ecdd:0x6b7776e0bb17e7e5!8m2!3d-33.9912899!4d151.1323251',
+                'sameAs'        => array(
+                    'https://www.google.com/maps/place/Nova+Care+Australia/@-33.9912899,151.1323251,17z/data=!3m1!4b1!4m6!3m5!1s0x6b12b16cf958ecdd:0x6b7776e0bb17e7e5!8m2!3d-33.9912899!4d151.1323251'
+                ),
+                'geo'           => array(
+                    '@type'     => 'GeoCoordinates',
+                    'latitude'  => -33.9912899,
+                    'longitude' => 151.1323251
+                ),
+                'address'       => array(
+                    '@type'           => 'PostalAddress',
+                    'addressLocality' => 'Sans Souci',
+                    'addressRegion'   => 'NSW',
+                    'postalCode'      => '2219',
+                    'addressCountry'  => 'AU'
+                ),
+                'areaServed'    => array(
+                    array( '@type' => 'AdministrativeArea', 'name' => 'Sans Souci' ),
+                    array( '@type' => 'AdministrativeArea', 'name' => 'Dolls Point' ),
+                    array( '@type' => 'AdministrativeArea', 'name' => 'Sandringham' ),
+                    array( '@type' => 'AdministrativeArea', 'name' => 'Ramsgate' ),
+                    array( '@type' => 'AdministrativeArea', 'name' => 'Kogarah' ),
+                    array( '@type' => 'AdministrativeArea', 'name' => 'Blakehurst' ),
+                    array( '@type' => 'AdministrativeArea', 'name' => 'Taren Point' ),
+                    array( '@type' => 'AdministrativeArea', 'name' => 'Sylvania' ),
+                    array( '@type' => 'AdministrativeArea', 'name' => 'Sutherland Shire' ),
+                    array( '@type' => 'AdministrativeArea', 'name' => 'St George Area' ),
+                    array( '@type' => 'State', 'name' => 'New South Wales' )
+                )
+            ),
+            array(
+                '@type'     => 'WebSite',
+                '@id'       => $site_id,
+                'url'       => home_url( '/' ),
+                'name'      => 'Nova Care Australia',
+                'publisher' => array( '@id' => $org_id )
+            )
+        );
+
+
+        // Add BreadcrumbList Schema if not home page
+        if ( ! is_front_page() ) {
+            $breadcrumb_items = array(
+                array(
+                    '@type'    => 'ListItem',
+                    'position' => 1,
+                    'name'     => 'Home',
+                    'item'     => home_url( '/' )
+                )
+            );
+
+            if ( is_singular() && is_object( $post ) ) {
+                $breadcrumb_items[] = array(
+                    '@type'    => 'ListItem',
+                    'position' => 2,
+                    'name'     => get_the_title( $post ),
+                    'item'     => get_permalink( $post )
+                );
+            }
+
+            $graph[] = array(
+                '@type'           => 'BreadcrumbList',
+                '@id'             => home_url( $_SERVER['REQUEST_URI'] ?? '/' ) . '#breadcrumb',
+                'itemListElement' => $breadcrumb_items
+            );
+        }
+
+        $schema = array(
+            '@context' => 'https://schema.org',
+            '@graph'   => $graph
+        );
+
+        echo "\n<!-- Nova Care Unified Schema.org Graph -->\n";
+        echo '<script type="application/ld+json">' . json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . '</script>' . "\n\n";
+    }
+    add_action( 'wp_head', 'novacare_inject_global_schema_graph', 2 );
+}
+
+/**
+ * 4. Performance Optimizations (Preconnect & Resource Hints for Core Web Vitals)
+ */
+if ( ! function_exists( 'novacare_resource_hints' ) ) {
+    function novacare_resource_hints( $urls, $relation_type ) {
+        if ( 'preconnect' === $relation_type ) {
+            $urls[] = array(
+                'href' => 'https://fonts.googleapis.com',
+                'crossorigin' => true,
+            );
+            $urls[] = array(
+                'href' => 'https://fonts.gstatic.com',
+                'crossorigin' => true,
+            );
+        }
+        return $urls;
+    }
+    add_filter( 'wp_resource_hints', 'novacare_resource_hints', 10, 2 );
+}
+
+/**
+ * 5. OpenGraph, Twitter Cards, Canonical & GEO Meta Tags (Social & AI Search Optimization)
+ */
+if ( ! function_exists( 'novacare_inject_seo_meta_tags' ) ) {
+    function novacare_inject_seo_meta_tags() {
+        global $post;
+
+        // Skip if Yoast or RankMath already handles OG meta tags
+        if ( defined( 'WPSEO_VERSION' ) || defined( 'RANK_MATH_VERSION' ) ) {
+            return;
+        }
+
+        $site_name   = 'Nova Care Australia';
+        $title       = is_front_page() ? get_bloginfo( 'name' ) . ' | NDIS & Home Care Packages Sutherland Shire' : wp_get_document_title();
+        $description = is_singular() && ! empty( $post->post_excerpt ) 
+            ? esc_attr( wp_strip_all_tags( $post->post_excerpt ) ) 
+            : 'Nova Care Australia provides premier NDIS disability support services and Home Care Packages across Sydney and Sutherland Shire.';
+        $url         = is_singular() ? get_permalink( $post ) : home_url( $_SERVER['REQUEST_URI'] ?? '/' );
+        $image       = get_stylesheet_directory_uri() . '/images/logo.png';
+
+        if ( is_singular() && is_object( $post ) && has_post_thumbnail( $post->ID ) ) {
+            $thumbnail_src = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'full' );
+            if ( ! empty( $thumbnail_src[0] ) ) {
+                $image = $thumbnail_src[0];
+            }
+        }
+
+        echo "\n<!-- Nova Care OpenGraph & GEO Meta Tags -->\n";
+        echo '<meta property="og:locale" content="en_AU" />' . "\n";
+        echo '<meta property="og:type" content="' . ( is_singular() ? 'article' : 'website' ) . '" />' . "\n";
+        echo '<meta property="og:title" content="' . esc_attr( $title ) . '" />' . "\n";
+        echo '<meta property="og:description" content="' . esc_attr( $description ) . '" />' . "\n";
+        echo '<meta property="og:url" content="' . esc_url( $url ) . '" />' . "\n";
+        echo '<meta property="og:site_name" content="' . esc_attr( $site_name ) . '" />' . "\n";
+        echo '<meta property="og:image" content="' . esc_url( $image ) . '" />' . "\n";
+        
+        echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
+        echo '<meta name="twitter:title" content="' . esc_attr( $title ) . '" />' . "\n";
+        echo '<meta name="twitter:description" content="' . esc_attr( $description ) . '" />' . "\n";
+        echo '<meta name="twitter:image" content="' . esc_url( $image ) . '" />' . "\n";
+
+        // Local GEO Meta Tags for AI Search Engines (Perplexity, Gemini, ChatGPT)
+        echo '<meta name="geo.region" content="AU-NSW" />' . "\n";
+        echo '<meta name="geo.placename" content="Sans Souci, St George & Sutherland Shire, NSW, Australia" />' . "\n";
+        echo '<meta name="geo.position" content="-33.9912899;151.1323251" />' . "\n";
+        echo '<meta name="ICBM" content="-33.9912899, 151.1323251" />' . "\n";
+
+        // Canonical Tag Fallback
+        echo '<link rel="canonical" href="' . esc_url( $url ) . '" />' . "\n\n";
+    }
+    add_action( 'wp_head', 'novacare_inject_seo_meta_tags', 1 );
+}
+
+/**
+ * 6. Clean Up WordPress Head Bloat for Faster Crawling
+ */
+if ( ! function_exists( 'novacare_cleanup_head_bloat' ) ) {
+    function novacare_cleanup_head_bloat() {
+        remove_action( 'wp_head', 'rsd_link' );
+        remove_action( 'wp_head', 'wlwmanifest_link' );
+        remove_action( 'wp_head', 'wp_generator' );
+        remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+    }
+    add_action( 'init', 'novacare_cleanup_head_bloat' );
+}
+
+

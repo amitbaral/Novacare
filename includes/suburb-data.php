@@ -10,6 +10,138 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function novacare_get_suburbs_data() {
     return array(
+        'sans-souci' => array(
+            'name' => 'Sans Souci',
+            'postcode' => '2219',
+            'distance' => '0 km (Head Office / Central Hub)',
+            'slug' => 'disability-support-aged-care-sans-souci',
+            'phone' => '0426 142 162',
+            'meta_title' => 'NDIS & In-Home Aged Care Services Sans Souci NSW 2219 | Nova Care',
+            'meta_description' => 'Premier NDIS disability support & in-home aged care provider in Sans Souci NSW 2219. Local personal care, nursing, respite & transport near Botany Bay.',
+            'hero_headline' => 'Premier NDIS Disability Support & In-Home Aged Care in Sans Souci, NSW',
+            'hero_subheadline' => 'Delivering compassionate, personalized, and accredited care across Sans Souci 2219 and surrounding St George & Shire communities.',
+            'landmarks' => array('Sans Souci Park & Cook Park Waterfront', 'Captain Cook Bridge', 'Sans Souci Public School', 'Ramsgate Road Commercial Hub'),
+            'intro_text' => 'Based in Sans Souci (2219), Nova Care Australia provides high-quality NDIS disability support and in-home aged care packages to residents throughout Sans Souci and the surrounding St George and Botany Bay peninsula. From daily personal care and household support to specialized clinical nursing and community participation along the scenic Georges River foreshore, our dedicated team is committed to enhancing your autonomy.',
+            'community_context' => 'Sans Souci offers a picturesque coastal lifestyle connected via Rocky Point Road and Captain Cook Bridge. Nova Care’s local presence in Sans Souci ensures rapid response times, local care staff who know the neighborhood, and seamless access to medical centers across St George and Sutherland Shire.',
+            'faqs' => array(
+                array(
+                    'q' => 'Where is Nova Care Australia located in Sans Souci NSW 2219?',
+                    'a' => 'Our primary head office operations are centered in Sans Souci (Plus Code 245J+FW Sans Souci), serving Sans Souci, Sandringham, Dolls Point, Ramsgate, Blakehurst, and surrounding areas.'
+                ),
+                array(
+                    'q' => 'What NDIS services are available in Sans Souci?',
+                    'a' => 'We offer core supports, Supported Independent Living (SIL), personal care assistance, nursing, respite care, transport, and active community participation in Sans Souci.'
+                ),
+                array(
+                    'q' => 'Do you provide Home Care Package services for seniors in Sans Souci?',
+                    'a' => 'Yes, we manage Level 1 to Level 4 Home Care Packages, providing domestic help, meal prep, mobility care, and health management.'
+                ),
+                array(
+                    'q' => 'How can I schedule a home consultation in Sans Souci?',
+                    'a' => 'Call our local care team on 0426 142 162 or fill out our online contact form to book a free assessment.'
+                )
+            )
+        ),
+        'dolls-point' => array(
+            'name' => 'Dolls Point',
+            'postcode' => '2219',
+            'distance' => '1.2 km East of Sans Souci',
+            'slug' => 'disability-support-aged-care-dolls-point',
+            'phone' => '0426 142 162',
+            'meta_title' => 'NDIS & Aged Care Services Dolls Point NSW 2219 | Nova Care',
+            'meta_description' => 'Dedicated NDIS support & home aged care services in Dolls Point NSW 2219. Personal care, nursing & community access along Peter Depena Reserve.',
+            'hero_headline' => 'Dedicated NDIS & In-Home Aged Care in Dolls Point, NSW',
+            'hero_subheadline' => 'Empowering Dolls Point residents with compassionate in-home care near Botany Bay.',
+            'landmarks' => array('Peter Depena Reserve', 'Dolls Point Beach', 'Russell Avenue Shops', 'Sailing Club Precinct'),
+            'intro_text' => 'Bordering Sans Souci on the Botany Bay peninsula, Dolls Point (2219) is a serene waterfront community. Nova Care Australia delivers personalized NDIS disability services and home care packages directly to Dolls Point residents.',
+            'community_context' => 'Dolls Point seniors and individuals with disability enjoy peaceful parklands and coastal air. Nova Care provides consistent, familiar care workers who assist with daily routines, shopping on Russell Avenue, and relaxed outings to Peter Depena Reserve.',
+            'faqs' => array(
+                array(
+                    'q' => 'Does Nova Care provide home care in Dolls Point 2219?',
+                    'a' => 'Yes, located right next door in Sans Souci, our care teams provide rapid, reliable NDIS and aged care support in Dolls Point.'
+                )
+            )
+        ),
+        'sandringham' => array(
+            'name' => 'Sandringham',
+            'postcode' => '2219',
+            'distance' => '1.0 km North of Sans Souci',
+            'slug' => 'disability-support-aged-care-sandringham',
+            'phone' => '0426 142 162',
+            'meta_title' => 'NDIS & Aged Care Sandringham NSW 2219 | Nova Care Australia',
+            'meta_description' => 'Professional NDIS disability support & in-home aged care in Sandringham NSW 2219. Personal assistance, nursing & respite near Georges River.',
+            'hero_headline' => 'Compassionate NDIS & In-Home Aged Care in Sandringham, NSW',
+            'hero_subheadline' => 'Supporting independent living for Sandringham seniors and NDIS participants.',
+            'landmarks' => array('Sandringham Bay', 'Clareville Reserve', 'Georges River Motor Yacht Club', 'Sans Souci Motor Boat Club'),
+            'intro_text' => 'Sandringham (2219) sits comfortably between Sans Souci and Ramsgate along the Georges River. Nova Care Australia delivers comprehensive, localized disability support and home care to Sandringham families.',
+            'community_context' => 'Nova Care helps Sandringham residents age gracefully at home with dedicated personal care workers, nursing support, and transport to nearby medical hubs.',
+            'faqs' => array(
+                array(
+                    'q' => 'What care services are offered in Sandringham 2219?',
+                    'a' => 'We offer full NDIS core supports, Home Care Packages, nursing, personal care, domestic aid, and respite care.'
+                )
+            )
+        ),
+        'ramsgate' => array(
+            'name' => 'Ramsgate',
+            'postcode' => '2217',
+            'distance' => '1.8 km North of Sans Souci',
+            'slug' => 'disability-support-aged-care-ramsgate',
+            'phone' => '0426 142 162',
+            'meta_title' => 'NDIS & Home Aged Care Services Ramsgate NSW 2217 | Nova Care',
+            'meta_description' => 'Leading NDIS disability support & aged care packages in Ramsgate NSW 2217. Personal care, nursing & community access near Ramsgate Beach.',
+            'hero_headline' => 'Leading NDIS Support & In-Home Aged Care in Ramsgate, NSW',
+            'hero_subheadline' => 'Tailored disability care and senior home support across Ramsgate and Ramsgate Beach.',
+            'landmarks' => array('Ramsgate Beach Shopping Centre', 'Ramsgate RSL Club', 'Beverley Park Golf Club', 'Scarborough Park'),
+            'intro_text' => 'Ramsgate (2217) and Ramsgate Beach offer a thriving shopping district and community facilities. Nova Care Australia delivers flexible NDIS support services and Home Care Packages across Ramsgate.',
+            'community_context' => 'Our staff escort Ramsgate clients to medical centers, grocery shopping at Ramsgate Beach, and community events, maintaining active social connection.',
+            'faqs' => array(
+                array(
+                    'q' => 'Can Nova Care help with transport in Ramsgate?',
+                    'a' => 'Yes, we provide door-to-door travel assistance for medical appointments and shopping in Ramsgate and Kogarah.'
+                )
+            )
+        ),
+        'blakehurst' => array(
+            'name' => 'Blakehurst',
+            'postcode' => '2221',
+            'distance' => '2.5 km Northwest of Sans Souci',
+            'slug' => 'disability-support-aged-care-blakehurst',
+            'phone' => '0426 142 162',
+            'meta_title' => 'NDIS & Aged Care Services Blakehurst NSW 2221 | Nova Care',
+            'meta_description' => 'Top-rated NDIS disability support & in-home aged care in Blakehurst NSW 2221. Personal care, clinical nursing & respite near Tom Uglys Bridge.',
+            'hero_headline' => 'Top-Rated NDIS & In-Home Aged Care in Blakehurst, NSW',
+            'hero_subheadline' => 'Providing high-quality home care services to Blakehurst residents and families.',
+            'landmarks' => array('Tom Uglys Bridge', 'Bald Face Point Reserve', 'King Georges Road Hub', 'Carss Bush Park nearby'),
+            'intro_text' => 'Situated just across Tom Uglys Bridge from Sylvania, Blakehurst (2221) is a prime waterside suburb. Nova Care Australia provides professional NDIS disability care and aged care packages for Blakehurst residents.',
+            'community_context' => 'Nova Care offers tailored care plans, registered nursing oversight, and skilled support workers dedicated to preserving comfort and independence in Blakehurst.',
+            'faqs' => array(
+                array(
+                    'q' => 'Do you service Blakehurst 2221 for NDIS and Home Care Packages?',
+                    'a' => 'Yes, Blakehurst is located right within our primary service area next to Sans Souci.'
+                )
+            )
+        ),
+        'taren-point' => array(
+            'name' => 'Taren Point',
+            'postcode' => '2229',
+            'distance' => '2.0 km South of Sans Souci (Across Captain Cook Bridge)',
+            'slug' => 'disability-support-aged-care-taren-point',
+            'phone' => '0426 142 162',
+            'meta_title' => 'NDIS & Aged Care Services Taren Point NSW 2229 | Nova Care',
+            'meta_description' => 'Reliable NDIS disability support & in-home aged care in Taren Point NSW 2229. Personal care, nursing & community support near Captain Cook Bridge.',
+            'hero_headline' => 'Reliable NDIS Disability Support & Home Care in Taren Point, NSW',
+            'hero_subheadline' => 'Connecting Sans Souci and Sutherland Shire with premium in-home care services.',
+            'landmarks' => array('Captain Cook Bridge', 'Taren Point Shorebird Reserve', 'Alexander Avenue Commercial District', 'Georges River Gateway'),
+            'intro_text' => 'Taren Point (2229) directly connects Sans Souci to the Sutherland Shire via the Captain Cook Bridge. Nova Care Australia delivers responsive disability support and home care packages to Taren Point residents.',
+            'community_context' => 'With our base in Sans Souci right across the bridge, Nova Care provides instant care worker deployment to Taren Point homes.',
+            'faqs' => array(
+                array(
+                    'q' => 'How close is Nova Care to Taren Point 2229?',
+                    'a' => 'Our Sans Souci office is less than 3 minutes away across the Captain Cook Bridge, guaranteeing fast response times.'
+                )
+            )
+        ),
         'sutherland' => array(
             'name' => 'Sutherland',
             'postcode' => '2232',

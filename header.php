@@ -221,7 +221,6 @@ echo apply_filters( 'avf_header_meta_viewport', $meta_viewport );
 wp_head();
 
 ?>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <?php
