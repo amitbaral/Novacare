@@ -1267,6 +1267,19 @@ if ( ! function_exists( 'novacare_seo_document_title' ) ) {
     add_filter( 'pre_get_document_title', 'novacare_seo_document_title', 99 );
 }
 
+// B. Force 154-character Meta Description across Yoast SEO, Rank Math, and WordPress Core
+if ( ! function_exists( 'novacare_seo_custom_meta_description' ) ) {
+    function novacare_seo_custom_meta_description( $desc ) {
+        if ( is_front_page() || is_home() ) {
+            return 'Nova Care Australia provides premier NDIS disability support, personal care, and Home Care Packages in Sans Souci, St George, and Sutherland Shire.';
+        }
+        return $desc;
+    }
+    add_filter( 'wpseo_metadesc', 'novacare_seo_custom_meta_description', 999 );
+    add_filter( 'rank_math/frontend/description', 'novacare_seo_custom_meta_description', 999 );
+}
+
+
 
 // B. Guarantee at least one H1 heading on every page (Fix 0 H1 tags issue)
 if ( ! function_exists( 'novacare_guarantee_h1_heading' ) ) {
