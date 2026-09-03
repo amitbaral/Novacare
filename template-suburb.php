@@ -52,37 +52,12 @@ $phone_display = $suburb['phone'] ?? '0426 142 162';
 $phone_tel = preg_replace( '/[^0-9+]/', '', $phone_display );
 
 get_header();
+
+do_action( 'ava_page_template_after_header' );
+do_action( 'ava_after_main_title' );
 ?>
 
 <style>
-/* Enfold Sticky Header Alignment */
-#header {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    z-index: 999 !important;
-    background: #FFFFFF !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.06) !important;
-}
-
-#main {
-    padding-top: 125px !important;
-    margin-top: 0 !important;
-    overflow: visible !important;
-}
-
-.html_header_top.html_header_sticky #main {
-    padding-top: 125px !important;
-}
-
-@media only screen and (max-width: 767px) {
-    #main, .html_header_top.html_header_sticky #main {
-        padding-top: 90px !important;
-    }
-}
-
 /* Nova Care Purple & Emerald Brand Theme Styles */
 :root {
     --nc-purple-dark: #3B0764;
