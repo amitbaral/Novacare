@@ -911,8 +911,41 @@ function novacare_suburbs_grid_shortcode( $atts ) {
 add_shortcode( 'novacare_suburbs_grid', 'novacare_suburbs_grid_shortcode' );
 
 /**
+ * Dynamic Suburb Page Query Normalizer (Runs BEFORE wp_head to prevent noindex tag)
+ */
+function novacare_normalize_suburb_query() {
+    if ( ! function_exists( 'novacare_get_suburbs_data' ) || is_admin() ) {
+        return;
+    }
+
+    $request_uri = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+    $segments = explode( '/', $request_uri );
+    $current_slug = end( $segments );
+
+    if ( empty( $current_slug ) ) {
+        return;
+    }
+
+    $all_suburbs = novacare_get_suburbs_data();
+    foreach ( $all_suburbs as $key => $suburb_info ) {
+        if ( $suburb_info['slug'] === $current_slug || $key === $current_slug ) {
+            global $wp_query;
+            if ( is_object( $wp_query ) ) {
+                $wp_query->is_404      = false;
+                $wp_query->is_page     = true;
+                $wp_query->is_singular = true;
+                $wp_query->is_archive  = false;
+                status_header( 200 );
+            }
+            break;
+        }
+    }
+}
+add_action( 'wp', 'novacare_normalize_suburb_query', 1 );
+
+/**
  * Dynamic Suburb Page Template Auto-Loader
- * Automatically routes all 20 suburb URLs to template-suburb.php without requiring manual WP database pages.
+ * Automatically routes all suburb URLs to template-suburb.php
  */
 function novacare_suburb_template_loader( $template ) {
     if ( ! function_exists( 'novacare_get_suburbs_data' ) || is_admin() ) {
@@ -932,13 +965,6 @@ function novacare_suburb_template_loader( $template ) {
         if ( $suburb_info['slug'] === $current_slug || $key === $current_slug ) {
             $suburb_template = get_template_directory() . '/template-suburb.php';
             if ( file_exists( $suburb_template ) ) {
-                global $wp_query;
-                if ( is_object( $wp_query ) ) {
-                    $wp_query->is_404 = false;
-                    $wp_query->is_page = true;
-                    $wp_query->is_singular = true;
-                    status_header( 200 );
-                }
                 return $suburb_template;
             }
         }
@@ -946,6 +972,7 @@ function novacare_suburb_template_loader( $template ) {
     return $template;
 }
 add_filter( 'template_include', 'novacare_suburb_template_loader', 99 );
+
 
 /**
  * Enqueue Inter Google Font Globally
@@ -1256,28 +1283,70 @@ if ( ! function_exists( 'novacare_cleanup_head_bloat' ) ) {
 /**
  * 7. Guaranteed H1 Heading & Title/Description Hierarchy Optimizer
  */
-// A. Optimize Document Title Tag (Optimal 50 chars for Google SERP)
+
+// Helper to detect current suburb landing page
+if ( ! function_exists( 'novacare_get_current_suburb_info' ) ) {
+    function novacare_get_current_suburb_info() {
+        if ( ! function_exists( 'novacare_get_suburbs_data' ) ) {
+            return false;
+        }
+
+        $request_uri = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+        $segments = explode( '/', $request_uri );
+        $current_slug = end( $segments );
+
+        if ( empty( $current_slug ) ) {
+            return false;
+        }
+
+        $all_suburbs = novacare_get_suburbs_data();
+        foreach ( $all_suburbs as $key => $suburb_info ) {
+            if ( $suburb_info['slug'] === $current_slug || $key === $current_slug ) {
+                return $suburb_info;
+            }
+        }
+
+        return false;
+    }
+}
+
+// A. Optimize Document Title Tag (Homepage + Suburb Landing Pages)
 if ( ! function_exists( 'novacare_seo_document_title' ) ) {
     function novacare_seo_document_title( $title ) {
         if ( is_front_page() || is_home() ) {
             return 'Nova Care Australia | NDIS & Aged Care Sans Souci';
         }
+
+        $suburb = novacare_get_current_suburb_info();
+        if ( $suburb && ! empty( $suburb['meta_title'] ) ) {
+            return $suburb['meta_title'];
+        }
+
         return $title;
     }
-    add_filter( 'pre_get_document_title', 'novacare_seo_document_title', 99 );
+    add_filter( 'pre_get_document_title', 'novacare_seo_document_title', 999 );
+    add_filter( 'wpseo_title', 'novacare_seo_document_title', 999 );
+    add_filter( 'rank_math/frontend/title', 'novacare_seo_document_title', 999 );
 }
 
-// B. Force 154-character Meta Description across Yoast SEO, Rank Math, and WordPress Core
+// B. Force 154-character Meta Description across Yoast SEO, Rank Math, and Suburb Pages
 if ( ! function_exists( 'novacare_seo_custom_meta_description' ) ) {
     function novacare_seo_custom_meta_description( $desc ) {
         if ( is_front_page() || is_home() ) {
             return 'Nova Care Australia provides premier NDIS disability support, personal care, and Home Care Packages in Sans Souci, St George, and Sutherland Shire.';
         }
+
+        $suburb = novacare_get_current_suburb_info();
+        if ( $suburb && ! empty( $suburb['meta_description'] ) ) {
+            return $suburb['meta_description'];
+        }
+
         return $desc;
     }
     add_filter( 'wpseo_metadesc', 'novacare_seo_custom_meta_description', 999 );
     add_filter( 'rank_math/frontend/description', 'novacare_seo_custom_meta_description', 999 );
 }
+
 
 
 
@@ -1303,6 +1372,35 @@ if ( ! function_exists( 'novacare_guarantee_h1_heading' ) ) {
     }
     add_filter( 'the_content', 'novacare_guarantee_h1_heading', 1 );
 }
+
+/**
+ * 8. Force 'index, follow' on all Suburb Landing Pages & Main Pages (Fix Enfold noindex bug)
+ */
+if ( ! function_exists( 'novacare_fix_suburb_robots_index' ) ) {
+    function novacare_fix_suburb_robots_index( $meta, $robots = '', $blog_public = 1 ) {
+        $suburb = novacare_get_current_suburb_info();
+        if ( $suburb || is_front_page() || is_page() || is_singular() ) {
+            return '<meta name="robots" content="index, follow" />' . "\n";
+        }
+        return $meta;
+    }
+    add_filter( 'avf_set_follow', 'novacare_fix_suburb_robots_index', 999, 3 );
+}
+
+if ( ! function_exists( 'novacare_filter_wp_robots' ) ) {
+    function novacare_filter_wp_robots( array $robots ) {
+        $suburb = novacare_get_current_suburb_info();
+        if ( $suburb || is_front_page() || is_page() || is_singular() ) {
+            $robots['noindex']  = false;
+            $robots['index']    = true;
+            $robots['follow']   = true;
+            $robots['nofollow'] = false;
+        }
+        return $robots;
+    }
+    add_filter( 'wp_robots', 'novacare_filter_wp_robots', 999 );
+}
+
 
 
 
