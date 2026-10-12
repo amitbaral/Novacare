@@ -914,15 +914,33 @@ add_shortcode( 'novacare_suburbs_grid', 'novacare_suburbs_grid_shortcode' );
  * Dynamic Suburb Page Query Normalizer (Runs BEFORE wp_head to prevent noindex tag)
  */
 function novacare_normalize_suburb_query() {
-    if ( ! function_exists( 'novacare_get_suburbs_data' ) || is_admin() ) {
+    if ( is_admin() ) {
         return;
     }
 
     $request_uri = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
     $segments = explode( '/', $request_uri );
-    $current_slug = end( $segments );
+    $current_slug = strtolower( end( $segments ) );
 
     if ( empty( $current_slug ) ) {
+        return;
+    }
+
+    // Support Executive Client Reporting URLs
+    $report_slugs = array( 'client-report', 'seo-report', 'october-report', 'performance-report' );
+    if ( in_array( $current_slug, $report_slugs, true ) ) {
+        global $wp_query;
+        if ( is_object( $wp_query ) ) {
+            $wp_query->is_404      = false;
+            $wp_query->is_page     = true;
+            $wp_query->is_singular = true;
+            $wp_query->is_archive  = false;
+            status_header( 200 );
+        }
+        return;
+    }
+
+    if ( ! function_exists( 'novacare_get_suburbs_data' ) ) {
         return;
     }
 
@@ -944,19 +962,32 @@ function novacare_normalize_suburb_query() {
 add_action( 'wp', 'novacare_normalize_suburb_query', 1 );
 
 /**
- * Dynamic Suburb Page Template Auto-Loader
- * Automatically routes all suburb URLs to template-suburb.php
+ * Dynamic Suburb Page & Client Report Template Auto-Loader
+ * Automatically routes all suburb URLs to template-suburb.php and report URLs to template-report.php
  */
 function novacare_suburb_template_loader( $template ) {
-    if ( ! function_exists( 'novacare_get_suburbs_data' ) || is_admin() ) {
+    if ( is_admin() ) {
         return $template;
     }
     
     $request_uri = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
     $segments = explode( '/', $request_uri );
-    $current_slug = end( $segments );
+    $current_slug = strtolower( end( $segments ) );
     
     if ( empty( $current_slug ) ) {
+        return $template;
+    }
+
+    // Route Executive Client Report
+    $report_slugs = array( 'client-report', 'seo-report', 'october-report', 'performance-report' );
+    if ( in_array( $current_slug, $report_slugs, true ) ) {
+        $report_template = get_template_directory() . '/template-report.php';
+        if ( file_exists( $report_template ) ) {
+            return $report_template;
+        }
+    }
+
+    if ( ! function_exists( 'novacare_get_suburbs_data' ) ) {
         return $template;
     }
 
@@ -1312,9 +1343,16 @@ if ( ! function_exists( 'novacare_get_current_suburb_info' ) ) {
     }
 }
 
-// A. Optimize Document Title Tag (Homepage + Suburb Landing Pages)
+// A. Optimize Document Title Tag (Homepage + Suburb Landing Pages + Client Report)
 if ( ! function_exists( 'novacare_seo_document_title' ) ) {
     function novacare_seo_document_title( $title ) {
+        $request_uri = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+        $segments = explode( '/', $request_uri );
+        $current_slug = strtolower( end( $segments ) );
+        if ( in_array( $current_slug, array( 'client-report', 'seo-report', 'october-report', 'performance-report' ), true ) ) {
+            return 'Nova Care Australia | Executive Client Performance Report';
+        }
+
         if ( is_front_page() || is_home() ) {
             return 'Nova Care Australia | NDIS & Aged Care Sans Souci';
         }
@@ -1334,6 +1372,13 @@ if ( ! function_exists( 'novacare_seo_document_title' ) ) {
 // B. Force 154-character Meta Description across Yoast SEO, Rank Math, and Suburb Pages
 if ( ! function_exists( 'novacare_seo_custom_meta_description' ) ) {
     function novacare_seo_custom_meta_description( $desc ) {
+        $request_uri = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+        $segments = explode( '/', $request_uri );
+        $current_slug = strtolower( end( $segments ) );
+        if ( in_array( $current_slug, array( 'client-report', 'seo-report', 'october-report', 'performance-report' ), true ) ) {
+            return 'Executive Performance & SEO Report for Nova Care Australia covering Google Ads spend, enquiries, organic rankings, and suburb landing pages.';
+        }
+
         if ( is_front_page() || is_home() ) {
             return 'Nova Care Australia provides premier NDIS disability support, personal care, and Home Care Packages in Sans Souci, St George, and Sutherland Shire.';
         }
