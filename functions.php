@@ -1072,6 +1072,7 @@ if ( ! function_exists( 'novacare_render_llms_txt' ) ) {
             }
             echo "\n## Official Contact & Verification\n";
             echo "- Phone: 0426 142 162\n";
+            echo "- Business Address: 3/341 Rocky Point Road, Sans Souci NSW 2219\n";
             echo "- Main Website: " . esc_url( home_url( '/' ) ) . "\n";
             echo "- Contact Page: " . esc_url( home_url( '/contact/' ) ) . "\n";
             echo "- NDIS Registered Provider Services: Yes\n";
@@ -1126,6 +1127,7 @@ if ( ! function_exists( 'novacare_inject_global_schema_graph' ) ) {
                 ),
                 'address'       => array(
                     '@type'           => 'PostalAddress',
+                    'streetAddress'   => '3/341 Rocky Point Road',
                     'addressLocality' => 'Sans Souci',
                     'addressRegion'   => 'NSW',
                     'postalCode'      => '2219',
@@ -1400,6 +1402,131 @@ if ( ! function_exists( 'novacare_filter_wp_robots' ) ) {
     }
     add_filter( 'wp_robots', 'novacare_filter_wp_robots', 999 );
 }
+
+/**
+ * 9. Rank Math SEO Compatibility & Suburb Indexing Overrides
+ * Fixes Rank Math injecting noindex or 404 meta on virtual suburb landing pages
+ */
+if ( ! function_exists( 'novacare_rank_math_robots_override' ) ) {
+    function novacare_rank_math_robots_override( $robots ) {
+        $suburb = novacare_get_current_suburb_info();
+        if ( $suburb || is_front_page() || is_page() || is_singular() ) {
+            $robots['index'] = 'index';
+            unset( $robots['noindex'] );
+            $robots['follow'] = 'follow';
+            unset( $robots['nofollow'] );
+        }
+        return $robots;
+    }
+    add_filter( 'rank_math/frontend/robots', 'novacare_rank_math_robots_override', 999 );
+}
+
+if ( ! function_exists( 'novacare_rank_math_canonical_override' ) ) {
+    function novacare_rank_math_canonical_override( $canonical ) {
+        $suburb = novacare_get_current_suburb_info();
+        if ( $suburb && ! empty( $suburb['slug'] ) ) {
+            return home_url( '/' . $suburb['slug'] . '/' );
+        }
+        return $canonical;
+    }
+    add_filter( 'rank_math/frontend/canonical', 'novacare_rank_math_canonical_override', 999 );
+}
+
+/**
+ * 10. Automatically Update Business Address in Widgets & Footer
+ * Replaces older Sydenham address with the current official Sans Souci headquarters address.
+ */
+if ( ! function_exists( 'novacare_filter_widget_address' ) ) {
+    function novacare_filter_widget_address( $content ) {
+        if ( is_string( $content ) && ( false !== stripos( $content, 'Yelverton' ) || false !== stripos( $content, 'Sydenham' ) ) ) {
+            $content = preg_replace(
+                '/23\s*Yelverton\s*Street,?\s*(<br\s*\/?>)?\s*Sydenham,?\s*NSW\s*2044/i',
+                '3/341 Rocky Point Road,<br />Sans Souci NSW 2219',
+                $content
+            );
+        }
+        return $content;
+    }
+    add_filter( 'widget_text', 'novacare_filter_widget_address', 99 );
+    add_filter( 'widget_custom_html_custom_html_value', 'novacare_filter_widget_address', 99 );
+    add_filter( 'widget_text_content', 'novacare_filter_widget_address', 99 );
+}
+
+/**
+ * 11. Conversion Tracking: Form Submissions, Click-to-Call & WhatsApp Enquiries
+ * Automatically pushes standard GA4 events: 'generate_lead', 'phone_call_click', 'whatsapp_click'
+ */
+if ( ! function_exists( 'novacare_inject_enquiry_conversion_tracking' ) ) {
+    function novacare_inject_enquiry_conversion_tracking() {
+        ?>
+        <!-- Nova Care Conversion Tracking (GA4 & Google Ads Ready) -->
+        <script>
+        (function() {
+            function sendTrackingEvent(eventName, params) {
+                if (typeof window.gtag === 'function') {
+                    window.gtag('event', eventName, params);
+                } else if (window.dataLayer && Array.isArray(window.dataLayer)) {
+                    var dataObj = Object.assign({ event: eventName }, params);
+                    window.dataLayer.push(dataObj);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // A. Click-to-Call Phone Tracking (Header, Sticky Mobile, Footers, Suburb CTAs)
+                document.querySelectorAll('a[href^="tel:"]').forEach(function(callBtn) {
+                    callBtn.addEventListener('click', function() {
+                        var number = (this.getAttribute('href') || '').replace('tel:', '').trim();
+                        sendTrackingEvent('phone_call_click', {
+                            event_category: 'Contact',
+                            event_label: number || '0426 142 162',
+                            link_url: window.location.href
+                        });
+                    });
+                });
+
+                // B. WhatsApp Direct Chat Tracking
+                document.querySelectorAll('a[href*="wa.me"]').forEach(function(waBtn) {
+                    waBtn.addEventListener('click', function() {
+                        sendTrackingEvent('whatsapp_click', {
+                            event_category: 'Contact',
+                            event_label: 'WhatsApp Enquiry',
+                            link_url: window.location.href
+                        });
+                    });
+                });
+
+                // C. Enfold AJAX Contact Form Submission Tracking
+                if (window.jQuery) {
+                    jQuery(document).on('ajaxComplete', function(event, xhr, settings) {
+                        if (settings.data && typeof settings.data === 'string' && settings.data.indexOf('avia_generated_form') !== -1) {
+                            if (xhr.status === 200 && (xhr.responseText.indexOf('avia_form_success') !== -1 || xhr.responseText.indexOf('avia-form-success') !== -1 || xhr.responseText.indexOf('ajaxresponse') !== -1)) {
+                                sendTrackingEvent('generate_lead', {
+                                    event_category: 'Enquiries',
+                                    event_label: 'Contact Form Submission',
+                                    page_location: window.location.href
+                                });
+                            }
+                        }
+                    });
+                }
+
+                // D. NDIS Referral Form Navigation Tracking
+                document.querySelectorAll('a[href*="referral-form"]').forEach(function(refBtn) {
+                    refBtn.addEventListener('click', function() {
+                        sendTrackingEvent('referral_form_click', {
+                            event_category: 'Referral',
+                            event_label: 'NDIS Referral Form Click'
+                        });
+                    });
+                });
+            });
+        })();
+        </script>
+        <?php
+    }
+    add_action( 'wp_footer', 'novacare_inject_enquiry_conversion_tracking', 99 );
+}
+
 
 
 

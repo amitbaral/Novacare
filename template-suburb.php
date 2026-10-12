@@ -761,14 +761,16 @@ document.addEventListener('DOMContentLoaded', function() {
       "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
-        "addressLocality": "<?php echo esc_js($suburb['name'] ?? 'Sutherland'); ?>",
+        "streetAddress": "3/341 Rocky Point Road",
+        "addressLocality": "Sans Souci",
         "addressRegion": "NSW",
-        "postalCode": "<?php echo esc_js($suburb['postcode'] ?? '2232'); ?>",
+        "postalCode": "2219",
         "addressCountry": "AU"
       },
       "areaServed": {
         "@type": "AdministrativeArea",
-        "name": "<?php echo esc_js($suburb['name'] ?? 'Sutherland'); ?>"
+        "name": "<?php echo esc_js($suburb['name'] ?? 'Sans Souci'); ?>",
+        "postalCode": "<?php echo esc_js($suburb['postcode'] ?? '2219'); ?>"
       }
     }
     <?php if ( ! empty( $suburb['faqs'] ) ) : ?>,

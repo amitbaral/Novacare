@@ -26,7 +26,7 @@ function novacare_get_suburbs_data() {
             'faqs' => array(
                 array(
                     'q' => 'Where is Nova Care Australia located in Sans Souci NSW 2219?',
-                    'a' => 'Our primary head office operations are centered in Sans Souci (Plus Code 245J+FW Sans Souci), serving Sans Souci, Sandringham, Dolls Point, Ramsgate, Blakehurst, and surrounding areas.'
+                    'a' => 'Our primary head office is located at 3/341 Rocky Point Road, Sans Souci NSW 2219, serving Sans Souci, Sandringham, Dolls Point, Ramsgate, Blakehurst, and surrounding St George and Sutherland Shire areas.'
                 ),
                 array(
                     'q' => 'What NDIS services are available in Sans Souci?',
